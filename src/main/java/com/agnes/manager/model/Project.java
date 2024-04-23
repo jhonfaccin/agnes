@@ -1,6 +1,9 @@
 package com.agnes.manager.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity(name = "project")
 public class Project {
@@ -19,6 +22,9 @@ public class Project {
     @Column(name = "status_id")
     private StatusProject status;
 
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Activity> activities;
 
     public Long getId() {
         return id;
@@ -50,5 +56,9 @@ public class Project {
 
     public void setStatus(StatusProject status) {
         this.status = status;
+    }
+
+    public List<Activity> getActivities() {
+        return activities;
     }
 }

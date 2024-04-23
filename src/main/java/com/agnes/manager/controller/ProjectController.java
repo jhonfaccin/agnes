@@ -1,5 +1,6 @@
 package com.agnes.manager.controller;
 
+import com.agnes.manager.dto.ProjectDTO;
 import com.agnes.manager.model.Project;
 import com.agnes.manager.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.OK).body(projects);
     }
     @GetMapping("/{status}")
-    public ResponseEntity<List<Project>> getProjectsByStatus(@PathVariable String status) {
-        List<Project> projects = projectService.getProjecByStatus(status);
+    public ResponseEntity<List<ProjectDTO>> getProjectsByStatus(@PathVariable String status) {
+        List<ProjectDTO> projects = projectService.getProjecDTOByStatus(status);
         return ResponseEntity.status(HttpStatus.OK).body(projects);
     }
 }
