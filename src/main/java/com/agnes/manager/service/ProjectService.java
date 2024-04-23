@@ -1,5 +1,6 @@
 package com.agnes.manager.service;
 
+import com.agnes.manager.dto.ProjectDTO;
 import com.agnes.manager.model.Project;
 import com.agnes.manager.model.StatusProject;
 import com.agnes.manager.repository.ProjectRepository;
@@ -16,8 +17,8 @@ public class ProjectService {
         return projectRepository.findAll();
     }
 
-    public List<Project> getProjecByStatus(String status) {
+    public List<ProjectDTO> getProjecDTOByStatus(String status) {
         StatusProject statusEnum = StatusProject.valueOf(status.toUpperCase());
-        return projectRepository.findByStatus(statusEnum);
+        return projectRepository.findProjectDTOByStatus(statusEnum);
     }
 }
