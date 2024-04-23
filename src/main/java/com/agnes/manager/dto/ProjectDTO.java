@@ -2,12 +2,19 @@ package com.agnes.manager.dto;
 
 import com.agnes.manager.model.StatusProject;
 
+import java.util.List;
+
 public class ProjectDTO {
-    private final Long customerId;
-    private final Long id;
+    private Long customerId;
+    private  Long id;
     private String name;
     private String status;
     private String customerName;
+    private List<ActivityDTO> activities;
+
+    public  ProjectDTO(){
+
+    }
 
     public ProjectDTO(Long id,String name, StatusProject status, String customerName, Long customerId) {
         this.id = id;
@@ -45,8 +52,23 @@ public class ProjectDTO {
         this.status = status;
     }
 
+    public void setId(Long id) {
+    }
+
     public Long getCustomerId() {
         return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public List<ActivityDTO> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(List<ActivityDTO> activities) {
+        this.activities = activities;
     }
 }
 
