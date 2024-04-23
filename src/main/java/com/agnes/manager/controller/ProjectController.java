@@ -25,9 +25,15 @@ public class ProjectController {
         List<Project> projects = projectService.getAllProjects();
         return ResponseEntity.status(HttpStatus.OK).body(projects);
     }
-    @GetMapping("/{status}")
+    @GetMapping("status/{status}")
     public ResponseEntity<List<ProjectDTO>> getProjectsByStatus(@PathVariable String status) {
         List<ProjectDTO> projects = projectService.getProjecDTOByStatus(status);
         return ResponseEntity.status(HttpStatus.OK).body(projects);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProjectDTO> getProject(@PathVariable Long id) throws Exception {
+        ProjectDTO project = projectService.getProjectDTOById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(project);
     }
 }
