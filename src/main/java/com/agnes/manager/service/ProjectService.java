@@ -1,43 +1,65 @@
 package com.agnes.manager.service;
 
-import com.agnes.manager.dto.ProjectDTO;
 import com.agnes.manager.model.Project;
 import com.agnes.manager.model.StatusProject;
+import com.agnes.manager.presentation.ActivityPresentation;
+import com.agnes.manager.presentation.ProjectDTO;
+import com.agnes.manager.presentation.ProjectPresentation;
 import com.agnes.manager.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.module.FindException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectService {
     @Autowired
     private ProjectRepository projectRepository;
-    @Autowired ActivityService activityService;
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+
+    public List<ProjectPresentation> getAllProjects() {
+        return projectRepository.findAll().stream().map(project ->
+                        new ProjectPresentation(project.getId(),
+                                project.getName(),
+                                project.getStatus(),
+                                project.getCustomer().getName(),
+                                project.getCustomer().getId()))
+                .collect(Collectors.toList());
     }
 
-    public List<ProjectDTO> getProjecDTOByStatus(String status) {
+    public List<ProjectPresentation> getAllProjectsByStatus(String status) {
         StatusProject statusEnum = StatusProject.valueOf(status.toUpperCase());
-        return projectRepository.findProjectDTOByStatus(statusEnum);
+        List<Project> projects = projectRepository.findAllByStatus(statusEnum);
+        return projects.stream()
+                .map(project -> new ProjectPresentation(
+                        project.getId(),
+                        project.getName(),
+                        project.getStatus(),
+                        project.getCustomer().getName(),
+                        project.getCustomer().getId()))
+                .collect(Collectors.toList());
     }
 
-    public ProjectDTO getProjectDTOById(Long id) throws Exception {
-        Project project = projectRepository.findById(id).orElse(null);
-        if (project == null) {
-            throw new Exception("Project not found");
-        }
-        return convertToDTO(project);
+    public ProjectDTO getProjectById(Long id) {
+        return projectRepository.findById(id).stream()
+                .map(project -> new ProjectDTO(
+                        project.getId(),
+                        project.getName(),
+                        project.getStatus(),
+                        project.getCustomer().getName(),
+                        project.getCustomer().getId(),
+                        project.getActivities().stream()
+                                .map(activity -> new ActivityPresentation(
+                                        activity.getId(),
+                                        activity.getName(),
+                                        activity.getProject().getId(),
+                                        activity.getStartDate(),
+                                        activity.getEndDate()
+                                ))
+                                .collect(Collectors.toList())
+                ))
+                .findFirst().orElseThrow(() -> new FindException("Project not found"));
     }
 
-    private ProjectDTO convertToDTO(Project project) {
-        ProjectDTO dto = new ProjectDTO();
-        dto.setId(project.getId());
-        dto.setName(project.getName());
-        dto.setCustomerId(project.getCustomer().getId());
-        dto.setStatus(project.getStatus().getValue());
-        dto.setActivities(activityService.convertToDTOList(project.getActivities()));
-        return dto;
-    }
 }
