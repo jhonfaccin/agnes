@@ -1,5 +1,8 @@
 package com.agnes.manager.model;
 
+import java.lang.module.FindException;
+import java.util.Arrays;
+
 public enum StatusProject {
     PLANNING("PLANNING"),
     OPEN("OPEN"),
@@ -15,12 +18,11 @@ public enum StatusProject {
     public String getValue() {
         return value;
     }
-    public static StatusProject fromName(String value) {
-        for (StatusProject status : StatusProject.values()) {
-            if (status.value.equalsIgnoreCase(value)) {
-                return status;
-            }
-        }
-        throw new IllegalArgumentException("Invalid value: " + value);
+
+    public static StatusProject fromName(final String valueParamter) {
+        return Arrays.stream(StatusProject.values())
+                .filter(statusProject -> statusProject.value.equals(valueParamter))
+                .findFirst()
+                .orElseThrow(() -> new FindException("Project not found " + valueParamter));
     }
 }
